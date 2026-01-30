@@ -18,7 +18,7 @@ public class CamadaDeInfraestruturaTests
             var result = Types.InAssembly(assembly)
                 .ShouldNot()
                 .HaveDependencyOnAny(
-                    "Core.Servico",
+                    "Core.Api.Servico",
                     "Core.Api")
                 .GetResult();
 

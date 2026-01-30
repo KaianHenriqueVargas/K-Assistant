@@ -5,7 +5,7 @@ using Core.Servicos;
 using Lib.Servicos.Extensoes;
 using Serilog;
 
-namespace MeEntregaAi.API;
+namespace Core;
 
 public class Program
 {

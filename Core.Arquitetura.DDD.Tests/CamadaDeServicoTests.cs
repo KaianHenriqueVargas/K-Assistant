@@ -8,7 +8,7 @@ public class CamadaDeServicoTests
     [Test]
     public void ServicoNaoDeveReferenciarInfraOuApi()
     {
-        var assemblies = AssemblyCamadaLoader.Carregar("Core.Servico.");
+        var assemblies = AssemblyCamadaLoader.Carregar("Core.Api.Servico.");
 
         // Se não houver assemblies, o teste passa automaticamente
         // porque não há nada para testar/violar

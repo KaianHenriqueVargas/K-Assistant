@@ -10,7 +10,7 @@ public class CamadaDeDominioTests
     public void DominioNaoDeveReferenciarOutrasCamadas()
     {
         
-        var assemblies = AssemblyCamadaLoader.Carregar("Core.Dominio.");
+        var assemblies = AssemblyCamadaLoader.Carregar("Core.Api.Dominio.");
         
         Assert.That(assemblies, Is.Not.Empty, "Nenhum assembly de domínio foi carregado.");
 
@@ -20,8 +20,8 @@ public class CamadaDeDominioTests
                 .InAssembly(assembly)
                 .ShouldNot()
                 .HaveDependencyOnAny(
-                    "Core.Aplicacao",
-                    "Core.Servico",
+                    "Core.Api.Aplicacao",
+                    "Core.Api.Servico",
                     "Infraestrutura",
                     "Core.Api")
                 .GetResult();

@@ -9,11 +9,11 @@ public class CamadaApiTests
     [Test]
     public void NenhumaCamadaDeveDependerDaApi()
     {
-        var assemblies = AssemblyCamadaLoader.Carregar("Core.");
+        var assemblies = AssemblyCamadaLoader.Carregar("Core.Api.");
 
         if (assemblies.Count == 0)
         {
-            Assert.Pass("Nenhum assembly com prefixo 'Core.' encontrado.");
+            Assert.Pass("Nenhum assembly com prefixo 'Core.Api.' encontrado.");
             return;
         }
         

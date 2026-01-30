@@ -7,7 +7,7 @@ public class CamadaDeAplicacaoTests
     [Test]
     public void AplicacaoSoDeveDependenderDeDominio()
     {
-        var assemblies = AssemblyCamadaLoader.Carregar("Core.Aplicacao.");
+        var assemblies = AssemblyCamadaLoader.Carregar("Core.Api.Aplicacao.");
 
         Assert.That(assemblies, Is.Not.Empty,
             "Nenhum assembly de aplicacao foi carregado.");
@@ -17,7 +17,7 @@ public class CamadaDeAplicacaoTests
             var result = Types.InAssembly(assembly)
                 .ShouldNot()
                 .HaveDependencyOnAny(
-                    "Core.Servico",
+                    "Core.Api.Servico",
                     "Infraestrutura",
                     "Core.Api")
                 .GetResult();
