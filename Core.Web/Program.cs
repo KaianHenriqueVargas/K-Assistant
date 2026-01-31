@@ -1,39 +1,24 @@
+using Core.Web.Configuracoes;
 using Lib.Servicos.Extensoes;
 using Serilog;
-using Core.Web.Configuracoes;
 
-namespace MeEntregaAi.API;
+namespace Core.Web;
 
 public class Program
 {
-    public static async Task Main(string[] args) => await ExecutarApi();
-
-    private static Task ExecutarApi(CancellationToken token = default)
+    public static async Task Main(string[] args)
     {
         try
         {
-            var webAplicationBuilder = InicializacaoExtensao.CriarWebApplicationBuilderCore();
+            var builder = InicializacaoExtensao
+                .CriarWebApplicationBuilderCore()
+                .ConfigurarBuilder();
 
-            var configuracao = webAplicationBuilder.Configuration;
-            webAplicationBuilder.Services.AddHttpClient();
-            // webAplicationBuilder.Services.AddScoped<IServicoDeEscaneamentoDeCameras, ServicoDeEscaneamentoDeCameras>();
-            // webAplicationBuilder.Services.AddSingleton<IDetectorDeRedeLocal, DetectorDeRedeLocal>();
-
-            webAplicationBuilder.Services.InjetarDominio(configuracao);
-            
-            var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-            webAplicationBuilder.WebHost.UseUrls($"http://0.0.0.0:{port}");
-
-            
-            return webAplicationBuilder
-                .Build()
-                .ConfigurarApp()
-                .RunAsync(token);
+            await builder.Build().ConfigurarApp().RunAsync();
         }
         catch (Exception e)
         {
-            Log.Logger
-                .Fatal(e, e.Message);
+            Log.Fatal(e, e.Message);
             throw;
         }
         finally
