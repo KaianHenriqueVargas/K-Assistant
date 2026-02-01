@@ -1,10 +1,10 @@
 using System.Collections.Concurrent;
 using Core.Web.Aplicacao.Cameras.Abstracoes;
+using Core.Web.Aplicacao.Cameras.Comandos;
 using Core.Web.Aplicacao.Cameras.Dtos;
 using Core.Web.Infraestrutura.Camera;
 using Core.Web.Infraestrutura.Network;
 using Core.Web.Models.Constantes;
-using Core.Web.Models.Dtos;
 using Core.Web.Models.Entidades;
 
 namespace Core.Web.Aplicacao.Cameras.Servicos;
@@ -14,7 +14,7 @@ public sealed class ServicoDeEscaneamentoDeCameras(IHttpClientFactory factory) :
     private readonly EscaneamentoDePortasDeCameras _escaneamentoDePortas = new(Portas.Cameras);
     private readonly IdentificadorDeCamera _identifier = new(factory.CreateClient());
 
-    private static void DefinirNetworkPadraoSeNecessario(NetworkScanRequest request)
+    private static void DefinirNetworkPadraoSeNecessario(EscanearRedeComando request)
     {
         if (string.IsNullOrWhiteSpace(request.NetworkRange))
             request.NetworkRange = NetworkScanner.ObterNetworkLocal();
@@ -31,7 +31,7 @@ public sealed class ServicoDeEscaneamentoDeCameras(IHttpClientFactory factory) :
     }
 
     private static ResultadoEscaneamento CriarResultado(
-        NetworkScanRequest request,
+        EscanearRedeComando request,
         int totalIps,
         IEnumerable<Camera> cameras)
     {
@@ -45,7 +45,7 @@ public sealed class ServicoDeEscaneamentoDeCameras(IHttpClientFactory factory) :
         };
     }
 
-    public async Task<ResultadoEscaneamento> ScanNetworkAsync(NetworkScanRequest request)
+    public async Task<ResultadoEscaneamento> ScanNetworkAsync(EscanearRedeComando request)
     {
         DefinirNetworkPadraoSeNecessario(request);
 
@@ -54,14 +54,14 @@ public sealed class ServicoDeEscaneamentoDeCameras(IHttpClientFactory factory) :
 
         await Parallel.ForEachAsync(ips, new ParallelOptions
             {
-                MaxDegreeOfParallelism = request.MaxThreads
+                MaxDegreeOfParallelism = request.NumeroMaximoDeThreads
             },
             async (ip, ct) =>
             {
-                if (!await ServicoDePing.EstaOnlineAsync(ip, request.TimeoutMs))
+                if (!await ServicoDePing.EstaOnlineAsync(ip, request.Timeout))
                     return;
 
-                var ports = await _escaneamentoDePortas.EscanearAsync(ip, request.TimeoutMs);
+                var ports = await _escaneamentoDePortas.EscanearAsync(ip, request.Timeout);
                 if (!ports.Any())
                     return;
 
@@ -74,38 +74,5 @@ public sealed class ServicoDeEscaneamentoDeCameras(IHttpClientFactory factory) :
             });
 
         return CriarResultado(request, ips.Count, cameras);
-    }
-
-
-    public async Task<Camera?> ScanSingleDeviceAsync(string ipAddress)
-        => await EscanearIpAsync(ipAddress, timeoutMs: 2000, deepScan: true);
-
-    public IReadOnlyCollection<int> GetCommonCameraPorts()
-        => Portas.Cameras;
-
-    // ======================
-    // Métodos privados
-    // ======================
-
-    private async Task<Camera?> EscanearIpAsync(
-        string ip,
-        int timeoutMs,
-        bool deepScan)
-    {
-        if (!await ServicoDePing.EstaOnlineAsync(ip, timeoutMs))
-            return null;
-
-        var ports = await _escaneamentoDePortas.EscanearAsync(ip, timeoutMs);
-        if (!ports.Any())
-            return null;
-
-        return deepScan
-            ? await _identifier.IdentificarAsync(ip, ports)
-            : new Camera
-            {
-                EnderecoDeIP = ip,
-                Porta = ports.Min(),
-                EstaOnline = true
-            };
     }
 }

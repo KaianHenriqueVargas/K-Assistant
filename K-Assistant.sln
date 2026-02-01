@@ -4,8 +4,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C6CBAB6B-EFD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Web", "Core.Web\Core.Web.csproj", "{4186BE0A-20CE-4958-B54B-6B6204A141E9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aplicacao", "Aplicacao", "{49C37EF0-7ABB-4145-AD03-A20480CFC700}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{93922AC0-CFCB-4525-83B4-8F795F86D369}"
 EndProject
 Global
@@ -14,7 +12,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{49C37EF0-7ABB-4145-AD03-A20480CFC700} = {C6CBAB6B-EFDC-4DFA-B236-B67966881231}
 		{4186BE0A-20CE-4958-B54B-6B6204A141E9} = {C6CBAB6B-EFDC-4DFA-B236-B67966881231}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
